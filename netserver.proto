@@ -1,0 +1,15 @@
+package netserver;
+
+//商户信息
+message GetUserNameRequest
+{
+	required int32 userId = 1;
+}
+
+message GetUserNameResponse
+{
+	required int32  gender = 1;    // 性别
+	required string name = 2;      // 名字
+	required string province = 3;  // 省份
+}
+

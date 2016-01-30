@@ -43,6 +43,9 @@ int main()
 	// 序列化数据
 	char buffer[MaxPacketLength] = {0};
 	NetPacket obj_1;
+	obj_1.netPacketHead.version = 179;
+	obj_1.netPacketHead.cmd = CMD_GetUserName;
+	obj_1.netPacketHead.result = 0;
 	netserver::GetUserNameRequest request;
 	request.set_userid(1000);
 	string strRequest_1;
@@ -51,15 +54,12 @@ int main()
 		printf("error:%d SerializeToString\n", __LINE__);
 		exit(-1);
 	}
-	uint32_t version = 179;         // 版本
-	PacketCmd cmd = CMD_GetUserName;       // 命令字
-	uint32_t uiPacketLen = strRequest_1.length(); // 包体长度
-	memcpy(&(obj_1.netPacketHead.version), &version, sizeof(uint32_t));
-	memcpy(&(obj_1.netPacketHead.cmd), &cmd, sizeof(PacketCmd));
-	memcpy(&(obj_1.netPacketHead.uiPacketLen), &uiPacketLen, sizeof(uint32_t));
-	//	obj_1.packetBody = strRequest_1.c_str();
+	obj_1.netPacketHead.uiPacketLen = strRequest_1.length();
 
 	NetPacket obj_2;
+	obj_2.netPacketHead.version = 180;
+	obj_2.netPacketHead.cmd = CMD_GetUserName;
+	obj_2.netPacketHead.result = 1333;
 	request.set_userid(1003);
 	string strRequest_2;
 	if(!request.SerializeToString(&strRequest_2))
@@ -67,14 +67,23 @@ int main()
 		printf("error:%d SerializeToString\n", __LINE__);
 		exit(-1);
 	}
-	version = 180;         // 版本
-	cmd = CMD_GetUserName;       // 命令字
-	uiPacketLen = strRequest_2.length(); // 包体长度
-	memcpy(&(obj_2.netPacketHead.version), &version, sizeof(uint32_t));
-	memcpy(&(obj_2.netPacketHead.cmd), &cmd, sizeof(PacketCmd));
-	memcpy(&(obj_2.netPacketHead.uiPacketLen), &uiPacketLen, sizeof(uint32_t));
+	obj_2.netPacketHead.uiPacketLen = strRequest_2.length();
 
-
+	NetPacket obj_3;
+	obj_3.netPacketHead.cmd = CMD_SetUserName;
+	obj_3.netPacketHead.version = 10;
+	obj_3.netPacketHead.result = 0;
+	netserver::SetUserNameRequest setUserName;
+	setUserName.set_gender(1);
+	setUserName.set_name("fenngwang");
+	setUserName.set_province("广东");
+	string strUserName;
+	if(!setUserName.SerializeToString(&strUserName))
+	{
+		printf("error:%d SerializeToString\n", __LINE__);
+		exit(-1);
+	}
+	obj_3.netPacketHead.uiPacketLen = strUserName.length();
 
 #if 1
 	// 一个包，同一个包的头和包体分开发
@@ -114,6 +123,7 @@ int main()
 	sleep(1);
 #endif
 
+#if 1
 	// 两个包分开发，一个包+第二个的包头-1，然后第二个的包头最后1+包体
 	memcpy(buffer, &(obj_1.netPacketHead), PacketHeadLength);
 	memcpy(buffer+PacketHeadLength, strRequest_1.c_str(),strRequest_1.length());
@@ -124,6 +134,12 @@ int main()
 	memcpy(buffer+1, strRequest_2.c_str(), strRequest_2.length());
 	send(sockfd,buffer,1+strRequest_2.length(),0);
 	sleep(1);
+#endif
+
+	// 再发另外一个命令的包
+	memcpy(buffer, &(obj_3.netPacketHead), PacketHeadLength);
+	memcpy(buffer+PacketHeadLength, strUserName.c_str(),strUserName.length());
+	send(sockfd,buffer,PacketHeadLength+strUserName.length(),0);
 
 	return 0;
 }

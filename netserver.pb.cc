@@ -23,6 +23,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* GetUserNameResponse_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   GetUserNameResponse_reflection_ = NULL;
+const ::google::protobuf::Descriptor* SetUserNameRequest_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  SetUserNameRequest_reflection_ = NULL;
 
 }  // namespace
 
@@ -65,6 +68,23 @@ void protobuf_AssignDesc_netserver_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(GetUserNameResponse));
+  SetUserNameRequest_descriptor_ = file->message_type(2);
+  static const int SetUserNameRequest_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SetUserNameRequest, gender_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SetUserNameRequest, name_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SetUserNameRequest, province_),
+  };
+  SetUserNameRequest_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      SetUserNameRequest_descriptor_,
+      SetUserNameRequest::default_instance_,
+      SetUserNameRequest_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SetUserNameRequest, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SetUserNameRequest, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(SetUserNameRequest));
 }
 
 namespace {
@@ -81,6 +101,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     GetUserNameRequest_descriptor_, &GetUserNameRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     GetUserNameResponse_descriptor_, &GetUserNameResponse::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    SetUserNameRequest_descriptor_, &SetUserNameRequest::default_instance());
 }
 
 }  // namespace
@@ -90,6 +112,8 @@ void protobuf_ShutdownFile_netserver_2eproto() {
   delete GetUserNameRequest_reflection_;
   delete GetUserNameResponse::default_instance_;
   delete GetUserNameResponse_reflection_;
+  delete SetUserNameRequest::default_instance_;
+  delete SetUserNameRequest_reflection_;
 }
 
 void protobuf_AddDesc_netserver_2eproto() {
@@ -102,13 +126,17 @@ void protobuf_AddDesc_netserver_2eproto() {
     "\n\017netserver.proto\022\tnetserver\"$\n\022GetUserN"
     "ameRequest\022\016\n\006userId\030\001 \002(\005\"E\n\023GetUserNam"
     "eResponse\022\016\n\006gender\030\001 \002(\005\022\014\n\004name\030\002 \002(\t\022"
-    "\020\n\010province\030\003 \002(\t", 137);
+    "\020\n\010province\030\003 \001(\t\"D\n\022SetUserNameRequest\022"
+    "\016\n\006gender\030\001 \002(\005\022\014\n\004name\030\002 \002(\t\022\020\n\010provinc"
+    "e\030\003 \001(\t", 207);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "netserver.proto", &protobuf_RegisterTypes);
   GetUserNameRequest::default_instance_ = new GetUserNameRequest();
   GetUserNameResponse::default_instance_ = new GetUserNameResponse();
+  SetUserNameRequest::default_instance_ = new SetUserNameRequest();
   GetUserNameRequest::default_instance_->InitAsDefaultInstance();
   GetUserNameResponse::default_instance_->InitAsDefaultInstance();
+  SetUserNameRequest::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_netserver_2eproto);
 }
 
@@ -449,7 +477,7 @@ bool GetUserNameResponse::MergePartialFromCodedStream(
         break;
       }
       
-      // required string province = 3;
+      // optional string province = 3;
       case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -498,7 +526,7 @@ void GetUserNameResponse::SerializeWithCachedSizes(
       2, this->name(), output);
   }
   
-  // required string province = 3;
+  // optional string province = 3;
   if (has_province()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->province().data(), this->province().length(),
@@ -530,7 +558,7 @@ void GetUserNameResponse::SerializeWithCachedSizes(
         2, this->name(), target);
   }
   
-  // required string province = 3;
+  // optional string province = 3;
   if (has_province()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->province().data(), this->province().length(),
@@ -565,7 +593,7 @@ int GetUserNameResponse::ByteSize() const {
           this->name());
     }
     
-    // required string province = 3;
+    // optional string province = 3;
     if (has_province()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -625,7 +653,7 @@ void GetUserNameResponse::CopyFrom(const GetUserNameResponse& from) {
 }
 
 bool GetUserNameResponse::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
   
   return true;
 }
@@ -646,6 +674,328 @@ void GetUserNameResponse::Swap(GetUserNameResponse* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = GetUserNameResponse_descriptor_;
   metadata.reflection = GetUserNameResponse_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int SetUserNameRequest::kGenderFieldNumber;
+const int SetUserNameRequest::kNameFieldNumber;
+const int SetUserNameRequest::kProvinceFieldNumber;
+#endif  // !_MSC_VER
+
+SetUserNameRequest::SetUserNameRequest()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void SetUserNameRequest::InitAsDefaultInstance() {
+}
+
+SetUserNameRequest::SetUserNameRequest(const SetUserNameRequest& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void SetUserNameRequest::SharedCtor() {
+  _cached_size_ = 0;
+  gender_ = 0;
+  name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  province_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+SetUserNameRequest::~SetUserNameRequest() {
+  SharedDtor();
+}
+
+void SetUserNameRequest::SharedDtor() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (province_ != &::google::protobuf::internal::kEmptyString) {
+    delete province_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void SetUserNameRequest::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* SetUserNameRequest::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return SetUserNameRequest_descriptor_;
+}
+
+const SetUserNameRequest& SetUserNameRequest::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_netserver_2eproto();  return *default_instance_;
+}
+
+SetUserNameRequest* SetUserNameRequest::default_instance_ = NULL;
+
+SetUserNameRequest* SetUserNameRequest::New() const {
+  return new SetUserNameRequest;
+}
+
+void SetUserNameRequest::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    gender_ = 0;
+    if (has_name()) {
+      if (name_ != &::google::protobuf::internal::kEmptyString) {
+        name_->clear();
+      }
+    }
+    if (has_province()) {
+      if (province_ != &::google::protobuf::internal::kEmptyString) {
+        province_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool SetUserNameRequest::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required int32 gender = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &gender_)));
+          set_has_gender();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_name;
+        break;
+      }
+      
+      // required string name = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_name:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_name()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->name().data(), this->name().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_province;
+        break;
+      }
+      
+      // optional string province = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_province:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_province()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->province().data(), this->province().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+      
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void SetUserNameRequest::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required int32 gender = 1;
+  if (has_gender()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->gender(), output);
+  }
+  
+  // required string name = 2;
+  if (has_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->name().data(), this->name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->name(), output);
+  }
+  
+  // optional string province = 3;
+  if (has_province()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->province().data(), this->province().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->province(), output);
+  }
+  
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* SetUserNameRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required int32 gender = 1;
+  if (has_gender()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->gender(), target);
+  }
+  
+  // required string name = 2;
+  if (has_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->name().data(), this->name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->name(), target);
+  }
+  
+  // optional string province = 3;
+  if (has_province()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->province().data(), this->province().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->province(), target);
+  }
+  
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int SetUserNameRequest::ByteSize() const {
+  int total_size = 0;
+  
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required int32 gender = 1;
+    if (has_gender()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->gender());
+    }
+    
+    // required string name = 2;
+    if (has_name()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->name());
+    }
+    
+    // optional string province = 3;
+    if (has_province()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->province());
+    }
+    
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void SetUserNameRequest::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const SetUserNameRequest* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const SetUserNameRequest*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void SetUserNameRequest::MergeFrom(const SetUserNameRequest& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_gender()) {
+      set_gender(from.gender());
+    }
+    if (from.has_name()) {
+      set_name(from.name());
+    }
+    if (from.has_province()) {
+      set_province(from.province());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void SetUserNameRequest::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SetUserNameRequest::CopyFrom(const SetUserNameRequest& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SetUserNameRequest::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  
+  return true;
+}
+
+void SetUserNameRequest::Swap(SetUserNameRequest* other) {
+  if (other != this) {
+    std::swap(gender_, other->gender_);
+    std::swap(name_, other->name_);
+    std::swap(province_, other->province_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata SetUserNameRequest::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = SetUserNameRequest_descriptor_;
+  metadata.reflection = SetUserNameRequest_reflection_;
   return metadata;
 }
 

@@ -21,7 +21,7 @@ using namespace std;
 
 #define SERVER_PORT 9999
 
-int process_buffer(char *buffer, int &already_len);
+int process_buffer(char *buffer, uint32_t &already_len);
 
 int main()
 {
@@ -65,7 +65,7 @@ int main()
 		if(connfd)
 		{
 			char buffer[MaxPacketLength] = {0}; // 应用层缓冲区
-			int already_len = 0; // 已经接收的长度
+			uint32_t already_len = 0; // 已经接收的长度
 			while(1)
 			{
 				ret = recv(connfd,buffer+already_len,MaxPacketLength-already_len,0);
@@ -117,9 +117,9 @@ int main()
  * = 0 长度不够
  * > 0 处理完毕
  */
-int process_buffer(char *buffer, int &already_len)
+int process_buffer(char *buffer, uint32_t &already_len)
 {
-	int unprocess_buffer_length = already_len; // 未处理的缓冲区长度
+	uint32_t unprocess_buffer_length = already_len; // 未处理的缓冲区长度
 	int start = 0;  // 初始的读buffer的起点
 
 	while(1)
@@ -160,6 +160,21 @@ int process_buffer(char *buffer, int &already_len)
 							return -1;
 						}
 						printf("success, userid is %d\n",request.userid());
+						start+=PacketHeadLength+header.uiPacketLen; // 更新起始位置
+						unprocess_buffer_length = unprocess_buffer_length - PacketHeadLength-header.uiPacketLen; // 剩余的未读缓冲区长度
+						already_len = unprocess_buffer_length;
+						break;
+					}
+					case CMD_SetUserName:
+					{
+						printf("debug:%d, recv a packet, cmd:%d\n", __LINE__, header.cmd);
+						netserver::SetUserNameRequest request;
+						if(!request.ParseFromArray(start_buffer+PacketHeadLength,header.uiPacketLen))
+						{
+							printf("error:%d ParseFromArray, cmd:%d\n", __LINE__, header.cmd);
+							return -1;
+						}
+						printf("success, gender is %d, name is %s, province is %s\n",request.gender(), request.name().c_str(), request.province().c_str());
 						start+=PacketHeadLength+header.uiPacketLen; // 更新起始位置
 						unprocess_buffer_length = unprocess_buffer_length - PacketHeadLength-header.uiPacketLen; // 剩余的未读缓冲区长度
 						already_len = unprocess_buffer_length;

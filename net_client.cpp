@@ -16,9 +16,11 @@
 #include <iostream>
 #include <string>
 #include "NetDefine.h"
+#include "log.h"
 #include "netserver.pb.h"
 
 using namespace std;
+using namespace CGI_LOG;
 
 #define SERVER_PORT 9999
 #define SERVER_IP "127.0.0.1"
@@ -36,7 +38,7 @@ int main()
 	int ret = connect(sockfd,(const struct sockaddr *)&server_addr,sizeof(server_addr));
 	if(ret)
 	{
-		printf("error:%d, connect failed, ret:%d, errno:%d\n", __LINE__, ret, errno);
+		API_LOG_DEBUG(LM_ERROR, "connect failed, ret:%d, errno:%d", __LINE__, ret, errno);
 		exit(1);
 	}
 
@@ -51,7 +53,7 @@ int main()
 	string strRequest_1;
 	if(!request.SerializeToString(&strRequest_1))
 	{
-		printf("error:%d SerializeToString\n", __LINE__);
+		API_LOG_DEBUG(LM_ERROR, "SerializeToString", __LINE__);
 		exit(-1);
 	}
 	obj_1.netPacketHead.uiPacketLen = strRequest_1.length();
@@ -64,7 +66,7 @@ int main()
 	string strRequest_2;
 	if(!request.SerializeToString(&strRequest_2))
 	{
-		printf("error:%d SerializeToString\n", __LINE__);
+		API_LOG_DEBUG(LM_ERROR, "SerializeToString", __LINE__);
 		exit(-1);
 	}
 	obj_2.netPacketHead.uiPacketLen = strRequest_2.length();
@@ -80,7 +82,7 @@ int main()
 	string strUserName;
 	if(!setUserName.SerializeToString(&strUserName))
 	{
-		printf("error:%d SerializeToString\n", __LINE__);
+		API_LOG_DEBUG(LM_ERROR, "SerializeToString", __LINE__);
 		exit(-1);
 	}
 	obj_3.netPacketHead.uiPacketLen = strUserName.length();

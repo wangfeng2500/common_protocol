@@ -5,6 +5,8 @@
 #include <string.h>
 #include "log.h"
 
+using namespace CGI_LOG;
+
 #define MaxPacketLength 65536
 
 #pragma pack(push,1)   //将原对齐方式压栈,采用新的1字节对齐方式
@@ -38,7 +40,7 @@ void transferBufferToPacketHead(const char * buffer, PacketHead &header)
 	memcpy(&(header.cmd), buffer+sizeof(uint32_t), sizeof(PacketCmd));
 	memcpy(&(header.uiPacketLen), buffer+sizeof(uint32_t)+sizeof(PacketCmd), sizeof(uint32_t));
 	memcpy(&(header.result), buffer+2*sizeof(uint32_t)+sizeof(PacketCmd), sizeof(uint32_t));
-	printf("version:%d, cmd:%d, uiPacketLen:%d, result:%d\n",header.version, header.cmd, header.uiPacketLen,header.result);
+	API_LOG_DEBUG(LM_TRACE,"version:%d, cmd:%d, uiPacketLen:%d, result:%d\n",header.version, header.cmd, header.uiPacketLen,header.result);
 }
 //void transferPacketHeadToBuffer(const PacketHead &header, char *buffer)
 //{

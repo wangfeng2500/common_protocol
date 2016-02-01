@@ -18,7 +18,6 @@ OBJS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp))
 OBJS_PB=$(patsubst %.proto,obj/%.pb.o,$(PROTO_SRC))
 
 obj/%.o:src/%.cpp
-	echo "$<:"$< "$@"$@
 	$(cc) -c $< $(flags) $(INC) -o $@
 obj/%.pb.o:src/%.pb.cc
 	$(cc) -c $< $(flags) $(INC) -o $@

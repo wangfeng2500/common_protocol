@@ -64,7 +64,7 @@ private:
 void CGI_Log_Init(const string & sLogFilePath);
 
 void CGI_Error_Log_Orig (const char *sFile, const int iLine, const char *sFunc, int i32Level, const char * pszFormat, ...) __attribute((format(printf, 5, 6)));
-#define CGI_Error_Log(level, args...) CGI_Error_Log_Orig(__FILE__, __LINE__, __FUNCTION__, level, args)
+#define API_LOG_DEBUG(level, args...) CGI_Error_Log_Orig(__FILE__, __LINE__, __FUNCTION__, level, args)
 
 
 }

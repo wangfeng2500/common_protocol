@@ -16,7 +16,7 @@
 namespace CGI_LOG
 {
 
-#define LOG_CONFIG_PATH "../log/"
+#define LOG_CONFIG_PATH "./log/"
 
 const char * CLogFile::priority_name(int errCode)
 {

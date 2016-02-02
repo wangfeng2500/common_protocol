@@ -31,11 +31,10 @@ int Message_Process::process_buffer(char *buffer, uint32_t &already_recv_len)
 
 	while(1)
 	{
-		API_LOG_DEBUG(LM_TRACE, "already_recv_len:%d, PacketHeadLength:%d", already_recv_len, PacketHeadLength);
+		API_LOG_DEBUG(LM_TRACE, "unprocess_buffer_length:%d, PacketHeadLength:%d", unprocess_buffer_length, PacketHeadLength);
 		char *start_buffer = buffer+start;
 		if(unprocess_buffer_length >= PacketHeadLength) // 长度比包头长
 		{
-			API_LOG_DEBUG(LM_TRACE, "unprocess_buffer_length:%d >= PacketHeadLength:%d", unprocess_buffer_length,PacketHeadLength);
 			PacketHead header;
 			transferBufferToPacketHead(start_buffer, header);
 			if(header.uiPacketLen > MaxPacketLength-PacketHeadLength) // 客户端的包，包体太长

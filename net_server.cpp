@@ -97,7 +97,7 @@ int main()
 				{
 					already_len += ret;
 					API_LOG_DEBUG(LM_TRACE,"before process_buffer, already_len:%d, ret:%d", already_len, ret);
-					if(msg_input.process_buffer(buffer, already_len))
+					if(msg_input.process_buffer(buffer, already_len) < 0)
 					{
 						API_LOG_DEBUG(LM_ERROR,"process_buffer failed");
 						close(connfd);

@@ -45,8 +45,9 @@ int main()
 	// 序列化数据
 	char buffer[MaxPacketLength] = {0};
 	NetPacket obj_1;
-	obj_1.netPacketHead.version = 179;
+	obj_1.netPacketHead.version = 1;
 	obj_1.netPacketHead.cmd = CMD_GetUserName;
+	obj_1.netPacketHead.serialNo = 1001;
 	obj_1.netPacketHead.result = 0;
 	netserver::GetUserNameRequest request;
 	request.set_userid(1000);
@@ -57,11 +58,13 @@ int main()
 		exit(-1);
 	}
 	obj_1.netPacketHead.uiPacketLen = strRequest_1.length();
+	obj_1.Encode();
 
 	NetPacket obj_2;
-	obj_2.netPacketHead.version = 180;
+	obj_2.netPacketHead.version = 2;
 	obj_2.netPacketHead.cmd = CMD_GetUserName;
-	obj_2.netPacketHead.result = 1333;
+	obj_2.netPacketHead.serialNo = 1002;
+	obj_2.netPacketHead.result = 1;
 	request.set_userid(1003);
 	string strRequest_2;
 	if(!request.SerializeToString(&strRequest_2))
@@ -70,11 +73,14 @@ int main()
 		exit(-1);
 	}
 	obj_2.netPacketHead.uiPacketLen = strRequest_2.length();
+	obj_2.Encode();
 
 	NetPacket obj_3;
+	obj_3.netPacketHead.version = 3;
 	obj_3.netPacketHead.cmd = CMD_SetUserName;
-	obj_3.netPacketHead.version = 10;
+	obj_3.netPacketHead.serialNo = 1003;
 	obj_3.netPacketHead.result = 0;
+
 	netserver::SetUserNameRequest setUserName;
 	setUserName.set_gender(1);
 	setUserName.set_name("fenngwang");
@@ -86,6 +92,7 @@ int main()
 		exit(-1);
 	}
 	obj_3.netPacketHead.uiPacketLen = strUserName.length();
+	obj_3.Encode();
 
 #if 1
 	// 一个包，同一个包的头和包体分开发

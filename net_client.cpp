@@ -38,7 +38,7 @@ int main()
 	int ret = connect(sockfd,(const struct sockaddr *)&server_addr,sizeof(server_addr));
 	if(ret)
 	{
-		API_LOG_DEBUG(LM_ERROR, "connect failed, ret:%d, errno:%d", __LINE__, ret, errno);
+		API_LOG_DEBUG(LM_ERROR, "connect failed, ret:%d, errno:%d",  ret, errno);
 		exit(1);
 	}
 
@@ -53,7 +53,7 @@ int main()
 	string strRequest_1;
 	if(!request.SerializeToString(&strRequest_1))
 	{
-		API_LOG_DEBUG(LM_ERROR, "SerializeToString", __LINE__);
+		API_LOG_DEBUG(LM_ERROR, "SerializeToString");
 		exit(-1);
 	}
 	obj_1.netPacketHead.uiPacketLen = strRequest_1.length();
@@ -66,7 +66,7 @@ int main()
 	string strRequest_2;
 	if(!request.SerializeToString(&strRequest_2))
 	{
-		API_LOG_DEBUG(LM_ERROR, "SerializeToString", __LINE__);
+		API_LOG_DEBUG(LM_ERROR, "SerializeToString");
 		exit(-1);
 	}
 	obj_2.netPacketHead.uiPacketLen = strRequest_2.length();
@@ -82,7 +82,7 @@ int main()
 	string strUserName;
 	if(!setUserName.SerializeToString(&strUserName))
 	{
-		API_LOG_DEBUG(LM_ERROR, "SerializeToString", __LINE__);
+		API_LOG_DEBUG(LM_ERROR, "SerializeToString");
 		exit(-1);
 	}
 	obj_3.netPacketHead.uiPacketLen = strUserName.length();

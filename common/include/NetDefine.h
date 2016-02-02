@@ -34,13 +34,13 @@ typedef struct tagNetPacket
 } NetPacket;
 
 
-void transferBufferToPacketHead(const char * buffer, PacketHead &header)
-{
-	memcpy(&(header.version), buffer, sizeof(uint32_t));
-	memcpy(&(header.cmd), buffer+sizeof(uint32_t), sizeof(PacketCmd));
-	memcpy(&(header.uiPacketLen), buffer+sizeof(uint32_t)+sizeof(PacketCmd), sizeof(uint32_t));
-	memcpy(&(header.result), buffer+2*sizeof(uint32_t)+sizeof(PacketCmd), sizeof(uint32_t));
-	API_LOG_DEBUG(LM_TRACE,"version:%d, cmd:%d, uiPacketLen:%d, result:%d\n",header.version, header.cmd, header.uiPacketLen,header.result);
+#define transferBufferToPacketHead(buffer, header)\
+{\
+	memcpy(&(header.version), buffer, sizeof(uint32_t));\
+	memcpy(&(header.cmd), buffer+sizeof(uint32_t), sizeof(PacketCmd));\
+	memcpy(&(header.uiPacketLen), buffer+sizeof(uint32_t)+sizeof(PacketCmd), sizeof(uint32_t));\
+	memcpy(&(header.result), buffer+2*sizeof(uint32_t)+sizeof(PacketCmd), sizeof(uint32_t));\
+	API_LOG_DEBUG(LM_TRACE,"version:%d, cmd:%d, uiPacketLen:%d, result:%d\n",header.version, header.cmd, header.uiPacketLen,header.result);\
 }
 //void transferPacketHeadToBuffer(const PacketHead &header, char *buffer)
 //{

@@ -17,13 +17,12 @@
 #include "NetDefine.h"
 #include "log.h"
 #include "netserver.pb.h"
+#include "message_process.h"
 
 using namespace std;
 using namespace CGI_LOG;
 
 #define SERVER_PORT 9999
-
-int process_buffer(char *buffer, uint32_t &already_len);
 
 int main()
 {
@@ -38,7 +37,8 @@ int main()
 
 	int flag = 1;
 	int ret = 0;
-	if(ret = setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag)) != 0)
+	ret = setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+	if(ret)
 	{
 		API_LOG_DEBUG(LM_ERROR,"setsockopt failed, ret:%d, errno:%d", ret, errno);
 	    exit(1);
@@ -69,6 +69,7 @@ int main()
 		if(connfd)
 		{
 			char buffer[MaxPacketLength] = {0}; // 应用层缓冲区
+			Message_Process msg_input;
 			uint32_t already_len = 0; // 已经接收的长度
 			while(1)
 			{
@@ -96,9 +97,9 @@ int main()
 				{
 					already_len += ret;
 					API_LOG_DEBUG(LM_TRACE,"before process_buffer, already_len:%d, ret:%d", already_len, ret);
-					if(process_buffer(buffer, already_len))
+					if(msg_input.process_buffer(buffer, already_len))
 					{
-						API_LOG_DEBUG(LM_ERROR,"process_buffer failed", __LINE__);
+						API_LOG_DEBUG(LM_ERROR,"process_buffer failed");
 						close(connfd);
 						break;
 					}
@@ -110,97 +111,5 @@ int main()
 	return 0;
 }
 
-
-/*
- * 参数：
- * @buffer 应用层缓冲
- * @start  起始位置
- * @length 可以处理的缓冲长度
- * return:
- * < 0 出错
- * = 0 长度不够
- * > 0 处理完毕
- */
-int process_buffer(char *buffer, uint32_t &already_len)
-{
-	uint32_t unprocess_buffer_length = already_len; // 未处理的缓冲区长度
-	int start = 0;  // 初始的读buffer的起点
-
-	while(1)
-	{
-		API_LOG_DEBUG(LM_TRACE, "already_len:%d, PacketHeadLength:%d", already_len, PacketHeadLength);
-		char *start_buffer = buffer+start;
-		if(unprocess_buffer_length >= PacketHeadLength) // 长度比包头长
-		{
-			API_LOG_DEBUG(LM_TRACE, "unprocess_buffer_length:%d >= PacketHeadLength:%d", __LINE__,unprocess_buffer_length,PacketHeadLength);
-			PacketHead header;
-			transferBufferToPacketHead(start_buffer, header);
-			if(header.uiPacketLen > MaxPacketLength-PacketHeadLength) // 客户端的包，包体太长
-			{
-				API_LOG_DEBUG(LM_TRACE, "header.uiPacketLen:%d > MaxPacketContentLength:%d", __LINE__, header.uiPacketLen, MaxPacketLength-PacketHeadLength);
-				return -1;
-			}
-
-			if(unprocess_buffer_length < PacketHeadLength+header.uiPacketLen) // 没有接收完
-			{
-				API_LOG_DEBUG(LM_TRACE, "length:%d < PacketHeadLength+header.uiPacketLen:%d", __LINE__, unprocess_buffer_length, PacketHeadLength+header.uiPacketLen);
-				if(start > 0)  // buffer中有完整的包，已经处理过，则要移动buffer
-				{
-					memmove(buffer, buffer+start, unprocess_buffer_length);
-				}
-				return 0;
-			}
-			else if(unprocess_buffer_length >= PacketHeadLength+header.uiPacketLen) // 已经有了一个完整的包
-			{
-				switch(header.cmd)
-				{
-					case CMD_GetUserName:
-					{
-						API_LOG_DEBUG(LM_TRACE,"recv a packet, cmd:%d", __LINE__, header.cmd);
-						netserver::GetUserNameRequest request;
-						if(!request.ParseFromArray(start_buffer+PacketHeadLength,header.uiPacketLen))
-						{
-							API_LOG_DEBUG(LM_ERROR, "ParseFromArray, cmd:%d", __LINE__, header.cmd);
-							return -1;
-						}
-						API_LOG_DEBUG(LM_TRACE,"success, userid is %d",request.userid());
-						start+=PacketHeadLength+header.uiPacketLen; // 更新起始位置
-						unprocess_buffer_length = unprocess_buffer_length - PacketHeadLength-header.uiPacketLen; // 剩余的未读缓冲区长度
-						already_len = unprocess_buffer_length;
-						break;
-					}
-					case CMD_SetUserName:
-					{
-						API_LOG_DEBUG(LM_TRACE," recv a packet, cmd:%d", __LINE__, header.cmd);
-						netserver::SetUserNameRequest request;
-						if(!request.ParseFromArray(start_buffer+PacketHeadLength,header.uiPacketLen))
-						{
-							API_LOG_DEBUG(LM_ERROR, "ParseFromArray, cmd:%d", __LINE__, header.cmd);
-							return -1;
-						}
-						API_LOG_DEBUG(LM_TRACE,"success, gender is %d, name is %s, province is %s",request.gender(), request.name().c_str(), request.province().c_str());
-						start+=PacketHeadLength+header.uiPacketLen; // 更新起始位置
-						unprocess_buffer_length = unprocess_buffer_length - PacketHeadLength-header.uiPacketLen; // 剩余的未读缓冲区长度
-						already_len = unprocess_buffer_length;
-						break;
-					}
-					default:
-						API_LOG_DEBUG(LM_ERROR,"recv a packet, cmd:%d", __LINE__, header.cmd);
-						break;
-				}
-			}
-		}
-		else // 包头都不够
-		{
-			API_LOG_DEBUG(LM_TRACE, "unprocess_buffer_length:%d < PacketHeadLength:%d", __LINE__,unprocess_buffer_length,PacketHeadLength);
-			if(start > 0) // buffer中有完整的包，已经处理过，则要移动buffer
-			{
-				memmove(buffer, buffer+start, unprocess_buffer_length);
-			}
-			return 0;
-		}
-	}
-	return 0;
-}
 
 

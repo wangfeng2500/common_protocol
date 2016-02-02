@@ -87,7 +87,10 @@ int Message_Process::process_buffer(char *buffer, uint32_t &already_recv_len)
 						break;
 					}
 					default:
-						API_LOG_DEBUG(LM_ERROR,"recv a packet, cmd:%d",  header.cmd);
+						API_LOG_DEBUG(LM_ERROR,"recv a undefined packet, cmd:%d",  header.cmd);
+						start+=PacketHeadLength+header.uiPacketLen; // 更新起始位置
+						unprocess_buffer_length = unprocess_buffer_length - PacketHeadLength-header.uiPacketLen; // 剩余的未读缓冲区长度
+						already_recv_len = unprocess_buffer_length;
 						break;
 				}
 			}

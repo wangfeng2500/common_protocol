@@ -68,7 +68,9 @@ int Socket_Listen::OnRecv()
 	API_LOG_DEBUG(LM_DEBUG,"enter into CSockListen OnRecv\n");
 	int length = sizeof(struct sockaddr_in);
 
-	// listen要用LT模式，不要用ET模式，否则accept到的连接可能少于请求的连接
+	/*
+	 * 此种方式处理连接请求，listen要用LT模式，不要用ET模式，否则accept到的连接可能少于请求的连接
+	 */
 	int connfd = accept(_sock_fd,(struct sockaddr *)&client_addr,(socklen_t*)&length);
 	if ( connfd <= 0 )
 	{
@@ -94,6 +96,28 @@ int Socket_Listen::OnRecv()
 		close(connfd);
 		return -1;
 	}
+
+	/*
+	 * 若listenfd为ET模式，则要如此处理请求
+
+	while((connfd = accept(_sock_fd,(struct sockaddr *)&client_addr,(socklen_t*)&length)) > 0)
+	{
+		int flag = fcntl (connfd, F_GETFL);
+		if ( fcntl (connfd, F_SETFL, O_NONBLOCK | flag) < 0 )
+		{
+			API_LOG_DEBUG(LM_ERROR,"HandleConnect set noblock socket:%d error:%s\n", connfd,strerror(errno));
+			close(connfd);
+			return -1;
+		}
+
+		if (AllocConnfd(connfd) < 0 )
+		{
+			API_LOG_DEBUG(LM_ERROR,"CSockListen alloc proxy connfd error\n");
+			close(connfd);
+			return -1;
+		}
+	}
+	*/
 
 	return 0;
 }

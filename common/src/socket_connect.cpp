@@ -37,14 +37,16 @@ int Socket_Connect::OnRecv()
 			else
 			{
 				API_LOG_DEBUG(LM_ERROR,"recv error. ret:%d, errno:%d", ret, errno);
-				close(_sock_fd);
+			//	close(_sock_fd);
+				delete this;
 				break;
 			}
 		}
 		else if(ret == 0)  // 对方已经断掉
 		{
 			API_LOG_DEBUG(LM_ERROR,"recv close");
-			close(_sock_fd);
+			//close(_sock_fd);
+			delete this;
 			break;
 		}
 		else
@@ -55,6 +57,7 @@ int Socket_Connect::OnRecv()
 			{
 				API_LOG_DEBUG(LM_ERROR,"process_buffer failed");
 				close(_sock_fd);
+			//	delete this;
 				break;
 			}
 			API_LOG_DEBUG(LM_TRACE,"after process_buffer, already_len:%d", already_len);

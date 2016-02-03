@@ -14,7 +14,7 @@ Socket_Listen::Socket_Listen()
 
 Socket_Listen::~Socket_Listen()
 {
-	DetachEpoller();
+
 }
 
 int Socket_Listen::Create(const char* bind_ip,short bind_port)

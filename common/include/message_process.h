@@ -27,7 +27,7 @@ public:
 	/*
 	 * return < 0: 出错，调用方需要将socket，并从epoll中去掉
 	 * return = 0: 客户端关闭了连接，调用方需要关闭socket，并从epoll中去掉
-	 * return > 0: 成功，返回值没有意义
+	 * return > 0: 成功，收到的数据长度（并不是recv_buffer中的剩余长度哦）
 	 */
 	int recv();
 
@@ -46,6 +46,7 @@ private:
 	Socket_Connect * sock_connect;
 	char recv_buffer[MaxPacketLength]; // 应用层缓接收冲区
 	uint32_t recv_buffer_index;        // 接收缓冲区中未处理的数据长度
+	uint32_t already_recv_len;         // 已经接收到的长度
 	char send_buffer[MaxPacketLength]; // 应用层发送缓冲区
 	uint32_t send_buffer_need_len;     // 发送缓冲区中需要发送的数据长度
 };

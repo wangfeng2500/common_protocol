@@ -135,6 +135,10 @@ CEPoller::CEPoller()
 
 CEPoller::~CEPoller()
 {
+	if(_epoll_fd != -1)
+	{
+		close(_epoll_fd);
+	}
 }
 
 int CEPoller::Create(int maxfd)

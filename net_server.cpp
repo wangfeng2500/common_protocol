@@ -14,10 +14,7 @@
 #include <sys/socket.h>
 #include <iostream>
 #include <string>
-#include "NetDefine.h"
 #include "log.h"
-#include "netserver.pb.h"
-#include "message_process.h"
 #include "socket_listen.h"
 #include "epoller.h"
 

@@ -18,6 +18,7 @@ Message_Process::Message_Process()
 	sock_connect = NULL;
 	recv_buffer_index = 0;
 	send_buffer_need_len = 0;
+	already_recv_len = 0;
 	bzero(recv_buffer,MaxPacketLength);
 	bzero(send_buffer,MaxPacketLength);
 }
@@ -30,6 +31,7 @@ Message_Process::~Message_Process()
 int Message_Process::recv()
 {
 	API_LOG_DEBUG(LM_ERROR,"enter Message_Process onRecv, ip:%s, sequence is %d", sock_connect->getIP().c_str(), sock_connect->getSequence());
+	already_recv_len = 0;
 	while(1)
 	{
 		int ret = ::recv(sock_connect->_sock_fd,recv_buffer+recv_buffer_index,MaxPacketLength-recv_buffer_index,0);
@@ -37,7 +39,7 @@ int Message_Process::recv()
 		{
 			if(errno == EWOULDBLOCK || errno == EAGAIN) // 没有数据了
 			{
-				return 1;
+				return already_recv_len;
 			}
 			else if(errno == EINTR)
 			{
@@ -57,7 +59,8 @@ int Message_Process::recv()
 		else
 		{
 			recv_buffer_index += ret;
-			API_LOG_DEBUG(LM_TRACE,"before process_buffer, recv_buffer_index:%d, ret:%d", recv_buffer_index, ret);
+			already_recv_len += ret;
+			API_LOG_DEBUG(LM_TRACE,"before process_buffer, already_recv_len:%d,recv_buffer_index:%d, ret:%d", already_recv_len,recv_buffer_index, ret);
 			if(process_buffer(recv_buffer, recv_buffer_index) < 0)
 			{
 				API_LOG_DEBUG(LM_ERROR,"process_buffer failed");
@@ -104,9 +107,9 @@ int Message_Process::send()
 	}
 }
 
-int Message_Process::process_buffer(char *buffer, uint32_t &already_recv_len)
+int Message_Process::process_buffer(char *buffer, uint32_t &recv_buffer_index)
 {
-	uint32_t unprocess_buffer_length = already_recv_len; // 未处理的缓冲区长度
+	uint32_t unprocess_buffer_length = recv_buffer_index; // 未处理的缓冲区长度
 	int start = 0;  // 初始的读buffer的起点
 
 	while(1)
@@ -151,7 +154,7 @@ int Message_Process::process_buffer(char *buffer, uint32_t &already_recv_len)
 						API_LOG_DEBUG(LM_TRACE,"success, userid is %d, cmd:%d",request.userid(), header.cmd);
 						start+=PacketHeadLength+header.uiPacketLen; // 更新起始位置
 						unprocess_buffer_length = unprocess_buffer_length - PacketHeadLength-header.uiPacketLen; // 剩余的未读缓冲区长度
-						already_recv_len = unprocess_buffer_length;
+						recv_buffer_index = unprocess_buffer_length;
 						/*
 						 * 填充返回数据
 						 */
@@ -206,7 +209,7 @@ int Message_Process::process_buffer(char *buffer, uint32_t &already_recv_len)
 						API_LOG_DEBUG(LM_TRACE,"success, gender is %d, name is %s, province is %s",request.gender(), request.name().c_str(), request.province().c_str());
 						start+=PacketHeadLength+header.uiPacketLen; // 更新起始位置
 						unprocess_buffer_length = unprocess_buffer_length - PacketHeadLength-header.uiPacketLen; // 剩余的未读缓冲区长度
-						already_recv_len = unprocess_buffer_length;
+						recv_buffer_index = unprocess_buffer_length;
 						/*
 						 * 填充返回数据
 						 */
@@ -234,7 +237,7 @@ int Message_Process::process_buffer(char *buffer, uint32_t &already_recv_len)
 						API_LOG_DEBUG(LM_ERROR,"recv a undefined packet, cmd:%d",  header.cmd);
 						start+=PacketHeadLength+header.uiPacketLen; // 更新起始位置
 						unprocess_buffer_length = unprocess_buffer_length - PacketHeadLength-header.uiPacketLen; // 剩余的未读缓冲区长度
-						already_recv_len = unprocess_buffer_length;
+						recv_buffer_index = unprocess_buffer_length;
 						/*
 						 * 填充返回数据
 						 */

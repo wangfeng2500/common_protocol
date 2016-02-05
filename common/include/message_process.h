@@ -38,15 +38,16 @@ private:
 	      -buffer: 数据缓冲区指针
 	 	  -already_recv_len：已经接收的未处理的数据长度
 	 * output参数：
-		  -already_recv_len：处理后剩余的数据长度
+		  -already_recv_len：处理后剩余的数据长度,剩余的缓存已经移动到buffer的头部
 		  -ret: < 0 出错  = 0 剩余长度不够一个完整包  > 0 为完整包，全部处理完毕
 	 */
 	int process_buffer(char *buffer, uint32_t &already_recv_len);
 private:
 	Socket_Connect * sock_connect;
 	char recv_buffer[MaxPacketLength]; // 应用层缓接收冲区
-	uint32_t already_len;              // 已经接收的长度
+	uint32_t recv_buffer_index;        // 接收缓冲区中未处理的数据长度
 	char send_buffer[MaxPacketLength]; // 应用层发送缓冲区
+	uint32_t send_buffer_need_len;     // 发送缓冲区中需要发送的数据长度
 };
 
 

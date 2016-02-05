@@ -35,10 +35,18 @@ public:
 		return _ip;
 	}
 
+	int getSequence()
+	{
+		return seqence;
+	}
+
+	void setSqeuence(int seq) {seqence = seq;}
+
 public:
 	Socket_Listen *_sock_listen;
 	string _ip;
 	Message_Process *msg_input;    // 数据解析类
+	int seqence;
 };
 
 

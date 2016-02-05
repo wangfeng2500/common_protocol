@@ -145,6 +145,7 @@ int Socket_Listen::AllocConnfd(int connfd)
 		API_LOG_DEBUG(LM_ERROR,"CSockListen alloc CSockClient error:%s",strerror(errno));
 		return -1;
 	}
+	static int sequence = 0;
 	unsigned clientip = client_addr.sin_addr.s_addr;
 	char* ip_str;
 	struct in_addr _in;
@@ -156,5 +157,6 @@ int Socket_Listen::AllocConnfd(int connfd)
 	socket_connect->AttachEpoller(_epoller);
 	socket_connect->SetEvent(FD_RECV|FD_CLOSE|FD_ERROR);
 	socket_connect->SetSockListen(this);
+	socket_connect->setSqeuence(++sequence);
 	return 0;
 }

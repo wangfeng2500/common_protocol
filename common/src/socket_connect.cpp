@@ -9,17 +9,35 @@
 
 Socket_Connect::Socket_Connect()
 {
-	already_len = 0;
-	bzero(buffer,MaxPacketLength);
+	_sock_listen = NULL;
+	msg_input = new Message_Process();
+	msg_input->setSockConnect(this);
 }
 
 Socket_Connect::~Socket_Connect()
 {
-
+	delete msg_input;
 }
 
 int Socket_Connect::OnRecv()
 {
+	int ret = msg_input->recv();
+	if(ret == 0)  // 对方关闭了连接
+	{
+		API_LOG_DEBUG(LM_DEBUG,"ip:%s close conection", _ip.c_str());
+		delete this;
+	}
+	else if(ret < 0) // 出错
+	{
+		API_LOG_DEBUG(LM_DEBUG,"ip:%s recv error", _ip.c_str());
+		delete this;
+	}
+	else
+	{
+
+	}
+	return 0;
+/*
 	API_LOG_DEBUG(LM_ERROR,"enter socket_connect onRecv, ip:%s", _ip.c_str());
 	while(1)
 	{
@@ -64,6 +82,7 @@ int Socket_Connect::OnRecv()
 		}
 	}
 	return 0;
+	*/
 }
 
 int Socket_Connect::OnSend()

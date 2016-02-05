@@ -15,7 +15,10 @@ using namespace CGI_LOG;
 
 Message_Process::Message_Process()
 {
-
+	sock_connect = NULL;
+	already_len = 0;
+	bzero(recv_buffer,MaxPacketLength);
+	bzero(send_buffer,MaxPacketLength);
 }
 
 Message_Process::~Message_Process()
@@ -23,6 +26,52 @@ Message_Process::~Message_Process()
 
 }
 
+int Message_Process::recv()
+{
+	API_LOG_DEBUG(LM_ERROR,"enter Message_Process onRecv, ip:%s", sock_connect->getIP().c_str());
+	while(1)
+	{
+		int ret = ::recv(sock_connect->_sock_fd,recv_buffer+already_len,MaxPacketLength-already_len,0);
+		if(ret < 0)
+		{
+			if(errno == EWOULDBLOCK || errno == EAGAIN) // 没有数据了
+			{
+				return 1;
+			}
+			else if(errno == EINTR)
+			{
+				continue;
+			}
+			else
+			{
+				API_LOG_DEBUG(LM_ERROR,"recv error. ret:%d, errno:%d", ret, errno);
+				return -1;
+			}
+		}
+		else if(ret == 0)  // 对方已经断掉
+		{
+			API_LOG_DEBUG(LM_ERROR,"recv close");
+			return 0;
+		}
+		else
+		{
+			already_len += ret;
+			API_LOG_DEBUG(LM_TRACE,"before process_buffer, already_len:%d, ret:%d", already_len, ret);
+			if(process_buffer(recv_buffer, already_len) < 0)
+			{
+				API_LOG_DEBUG(LM_ERROR,"process_buffer failed");
+				return -1;
+			}
+			API_LOG_DEBUG(LM_TRACE,"after process_buffer, already_len:%d", already_len);
+		}
+	}
+	return 0;
+}
+
+int Message_Process::send()
+{
+	return 0;
+}
 
 int Message_Process::process_buffer(char *buffer, uint32_t &already_recv_len)
 {

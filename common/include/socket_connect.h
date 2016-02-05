@@ -13,6 +13,7 @@
 #include "message_process.h"
 
 class Socket_Listen;
+class Message_Process;
 
 class Socket_Connect:public CEpollSocket
 {
@@ -29,12 +30,15 @@ public:
 
 	void setClientIP(const char * strIP){_ip = strIP;}
 
-private:
+	string getIP()
+	{
+		return _ip;
+	}
+
+public:
 	Socket_Listen *_sock_listen;
 	string _ip;
-	char buffer[MaxPacketLength]; //应用层缓冲区
-	uint32_t already_len;         // 已经接收的长度
-	Message_Process msg_input;    // 数据解析类
+	Message_Process *msg_input;    // 数据解析类
 };
 
 

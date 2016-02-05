@@ -10,6 +10,10 @@
 
 #include <stdint.h>
 #include "NetDefine.h"
+#include "socket_connect.h"
+#include <sys/socket.h>
+
+class Socket_Connect;
 
 class Message_Process
 {
@@ -18,6 +22,18 @@ public:
 	~Message_Process();
 
 public:
+	void setSockConnect(Socket_Connect* sock_connect) { this->sock_connect = sock_connect; };
+
+	/*
+	 * return < 0: 出错，调用方需要将socket，并从epoll中去掉
+	 * return = 0: 客户端关闭了连接，调用方需要关闭socket，并从epoll中去掉
+	 * return > 0: 成功，返回值没有意义
+	 */
+	int recv();
+
+	int send();
+
+private:
 	/* input参数：
 	      -buffer: 数据缓冲区指针
 	 	  -already_recv_len：已经接收的未处理的数据长度
@@ -26,6 +42,11 @@ public:
 		  -ret: < 0 出错  = 0 剩余长度不够一个完整包  > 0 为完整包，全部处理完毕
 	 */
 	int process_buffer(char *buffer, uint32_t &already_recv_len);
+private:
+	Socket_Connect * sock_connect;
+	char recv_buffer[MaxPacketLength]; // 应用层缓接收冲区
+	uint32_t already_len;              // 已经接收的长度
+	char send_buffer[MaxPacketLength]; // 应用层发送缓冲区
 };
 
 
